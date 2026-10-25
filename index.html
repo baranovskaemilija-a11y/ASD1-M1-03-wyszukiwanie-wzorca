@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyszukiwanie wzorca w tekście</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Wyszukiwanie wzorca w tekście</h1>
+    <p>Laboratorium: metoda naiwna, KMP i Rabin–Karp.</p>
+
+    <label for="tekst">Tekst (A–Z i spacje, maks. 120 znaków):</label>
+    <textarea id="tekst" maxlength="120">ABABABA</textarea>
+
+    <label for="wzorzec">Wzorzec (1–20 znaków):</label>
+    <input id="wzorzec" maxlength="20" value="ABA">
+<button id="szukaj">Szukaj metodą naiwną</button>
+<button id="szukajKMP">Szukaj metodą KMP</button>
+<p id="wynikKMP" role="status"></p>
+<button id="szukajRK">Szukaj metodą Rabina–Karpa</button>
+<p id="wynikRK" role="status"></p>
+<p id="wynik" role="status"></p>
+<h2>Koszt algorytmów i liczniki</h2>
+
+<p>n — liczba znaków tekstu, m — liczba znaków wzorca,
+k — liczba znalezionych wystąpień.</p>
+
+<ul>
+    <li><strong>Naiwna:</strong> czas w najgorszym przypadku
+    O(n × m), dodatkowa pamięć O(1).</li>
+
+    <li><strong>KMP:</strong> budowa π zajmuje O(m),
+    wyszukiwanie O(n), łącznie O(n + m).
+    Dodatkowa pamięć O(m) na tablicę π.</li>
+
+    <li><strong>Rabin–Karp:</strong> przygotowanie haszy O(m),
+    przesuwanie okna O(n), dodatkowo porównania znaków.
+    Przy małej liczbie krótkich weryfikacji czas wynosi O(n + m).
+    W najgorszym przypadku O(n × m).
+    Dodatkowa pamięć O(1).</li>
+</ul>
+
+<p>Każda metoda potrzebuje dodatkowo O(k) pamięci na listę wyników.
+Podane koszty dotyczą algorytmów, bez rysowania planszy,
+tworzenia opisów i kopiowania stanów do animacji.</p>
+
+<h3>Co liczymy?</h3>
+
+<ul>
+    <li><strong>Porównania znaków:</strong> każde sprawdzenie
+    równości dwóch znaków, także zakończone niezgodnością.</li>
+
+    <li><strong>Budowa π:</strong> porównania znaków wzorca
+    liczone osobno od wyszukiwania KMP.</li>
+
+    <li><strong>Aktualizacje hasza:</strong> obliczenia hasza
+    kolejnego okna z poprzedniego hasza.
+    Początkowe hasze są przygotowaniem, nie przesunięciem.</li>
+
+    <li><strong>Zgodności haszy:</strong> liczba okien,
+    dla których hasz jest równy haszowi wzorca.</li>
+
+    <li><strong>Weryfikacja Rabina–Karpa:</strong> porównania
+    rzeczywistych znaków po zgodności haszy.</li>
+</ul>
+
+<p>Liczniki nie obejmują walidacji danych, obsługi przycisków,
+wyświetlania animacji ani wykonywania testów.
+Liczba kroków animacji nie jest liczbą operacji algorytmu.
+Program przechowuje bieżący stan pokazu, bez historii klatek.</p>
+<h2>Testy automatyczne</h2>
+
+<button id="uruchomTesty">Uruchom testy</button>
+<pre id="wynikiTestow"></pre>
+<h2>Jak działają metody?</h2>
+
+<details>
+    <summary>Metoda naiwna — działanie i zastosowanie</summary>
+    <p>Sprawdza wzorzec na każdej możliwej pozycji tekstu.
+    Porównuje kolejne znaki, aż znajdzie różnicę albo całe dopasowanie.
+    Następnie przesuwa wzorzec o 1.</p>
+    <p>Jest prosta i przydatna dla krótkich danych.
+    Przy wielu powtórzeniach wielokrotnie porównuje te same znaki.</p>
+</details>
+
+<details>
+    <summary>KMP — działanie i zastosowanie</summary>
+    <p>Najpierw buduje tablicę π. Wartość π[i] oznacza długość
+    najdłuższego właściwego prefiksu, który jest również sufiksem
+    fragmentu wzorca od pozycji 0 do i.
+    Właściwy prefiks jest krótszy od całego fragmentu.</p>
+    <p>Przy niezgodności KMP korzysta z π, aby zachować część
+    wcześniejszego dopasowania. Nie cofa indeksu tekstu.</p>
+    <p>Sprawdza się przy długich tekstach i powtórzeniach.
+    Wymaga dodatkowej tablicy oraz przygotowania wzorca.</p>
+</details>
+
+<details>
+    <summary>Rabin–Karp — działanie i zastosowanie</summary>
+    <p>Porównuje hasz wzorca z haszem okna tekstu.
+    Hasz oblicza z kodów ASCII, z podstawą 31 i modułem 101.
+    Po przesunięciu usuwa wpływ starego znaku i dodaje nowy znak.</p>
+    <p>Ujemny wynik modulo sprowadza do zakresu 0–100.
+    Po zgodności haszy zawsze porównuje rzeczywiste znaki.</p>
+    <p>Hasz szybko odrzuca wiele niepasujących okien.
+    Metodę można rozszerzyć do wyszukiwania wielu wzorców.
+    Ograniczeniem są kolizje, które wymagają dodatkowych porównań.</p>
+</details>
+<h2>Porównanie metod</h2>
+<button id="porownaj">Porównaj trzy metody</button>
+<pre id="wynikPorownania"></pre>
+<h2>Gotowe przykłady</h2>
+<button id="przyklad1">Nakładające się: ABABABA / ABA</button>
+<button id="przyklad2">Powtórzenia: AAAAA / AAA</button>
+<button id="przyklad3">Brak wyniku: ABCDEF / XYZ</button>
+<button id="przyklad4">Kolizja haszy: DI / AA</button>
+<button id="przyklad5">Zwykły tekst: ALA MA KOTA / KOTA</button>
+<h2>Pokaz krok po kroku</h2>
+
+<label for="metoda">Wybierz metodę:</label>
+<select id="metoda">
+    <option value="naiwna">Metoda naiwna</option>
+    <option value="kmp">KMP</option>
+    <option value="rk">Rabin–Karp</option>
+</select>
+
+<button id="krok">Krok</button>
+<button id="startPauza">Start / Pauza</button>
+<button id="reset">Reset</button>
+
+<label for="tempo">Czas między krokami:</label>
+<select id="tempo">
+    <option value="1500">Wolno</option>
+    <option value="800" selected>Średnio</option>
+    <option value="300">Szybko</option>
+</select>
+
+<div id="plansza"></div>
+
+<pre id="wizualizacja"></pre>
+<details>
+    <summary>Co oznaczają i oraz j?</summary>
+    <p>Metoda naiwna i Rabin–Karp: i oznacza początek okna
+    w tekście, a j — indeks porównywanego znaku wzorca.
+    Porównujemy tekst[i + j] ze wzorcem[j].</p>
+    <p>Wyszukiwanie KMP: i oznacza indeks w tekście,
+    a j — liczbę już dopasowanych znaków wzorca.
+    Następne porównanie dotyczy tekst[i] i wzorca[j].</p>
+    <p>Budowa π: i oznacza pozycję we wzorcu,
+    dla której obliczamy π[i], a j — długość
+    aktualnie rozważanego pasującego prefiksu.</p>
+</details>
+<h3>Pseudokod algorytmu</h3>
+<div id="pseudokod"></div>
+<h2>Sprawdź, czy rozumiesz</h2>
+
+<details>
+    <summary>Dlaczego KMP nie sprawdza całego fragmentu ponownie?</summary>
+    <p>Tablica π wskazuje, jaki krótszy prefiks wzorca pasuje
+    do końca już dopasowanego fragmentu. KMP zachowuje tę
+    informację i nie cofa indeksu tekstu.</p>
+</details>
+
+<details>
+    <summary>Czy równe hasze oznaczają dopasowanie?</summary>
+    <p>Nie. Różne napisy mogą mieć ten sam hasz.
+    Dlatego Rabin–Karp sprawdza rzeczywiste znaki.
+    Napisy DI i AA mają hasz 60, ale są różne.</p>
+</details>
+
+<p id="pytanieStanu">Wykonaj krok, aby zobaczyć pytanie o aktualny stan.</p>
+<button id="pokazOdpowiedz">Pokaż odpowiedź</button>
+<p id="odpowiedzStanu" role="status"></p>
+<p id="opisKroku" role="status">Wybierz metodę i kliknij Krok.</p>
+    <script src="script.js"></script>
+</body>
+</html>

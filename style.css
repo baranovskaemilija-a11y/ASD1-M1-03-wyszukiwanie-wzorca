@@ -1,0 +1,104 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 24px;
+    background: #f0f4f8;
+    color: #172338;
+}
+
+h1 {
+    color: #174ea6;
+}
+
+label {
+    display: block;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+textarea,
+input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px;
+    font-family: monospace;
+    font-size: 20px;
+    border: 2px solid #8295ad;
+    border-radius: 8px;
+}
+
+textarea {
+    min-height: 100px;
+}
+#plansza {
+    margin-top: 20px;
+    overflow-x: auto;
+    padding: 8px;
+}
+
+.rzad-znakow {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+    width: max-content;
+}
+
+.komorka {
+    box-sizing: border-box;
+    flex: 0 0 44px;
+    width: 44px;
+    min-height: 64px;
+    border: 2px solid #8296b0;
+    border-radius: 6px;
+    background: white;
+    text-align: center;
+    padding: 5px 0;
+    font-family: monospace;
+}
+
+.komorka small {
+    display: block;
+    color: #475569;
+    font-size: 12px;
+}
+
+.komorka strong {
+    display: block;
+    font-size: 22px;
+}
+
+.komorka.aktywna {
+    background: #fff0b3;
+    border: 3px solid #805500;
+}
+
+.komorka.aktywna::after {
+    content: "▼";
+    display: block;
+    font-size: 12px;
+}
+
+.komorka.znaleziony-start {
+    border-bottom: 5px double #18733c;
+}
+
+#pseudokod {
+    margin: 12px 0;
+    font-family: monospace;
+    overflow-x: auto;
+}
+
+.wiersz-kodu {
+    padding: 8px 12px;
+    white-space: pre;
+    border-left: 4px solid transparent;
+}
+
+.wiersz-kodu.biezacy {
+    background: #fff0b3;
+    border-left-color: #805500;
+    font-weight: bold;
+}
